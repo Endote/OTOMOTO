@@ -1,168 +1,258 @@
 from requests_html import HTMLSession
-import pprint
-import os
-import re
-import time
-import pandas
 from bs4 import BeautifulSoup
+import requests
+import re
 
-pp = pprint.PrettyPrinter(indent=2)
-
-print('Welcome to your best betting advisor!')
-
-url = 'https://www.flashscore.pl/'
-
-html = ''
-date = ''
-
-'''
-:param url:
-:return:
-
-x is returned table with all event info in such configuration:
-a) upcoming
-[id, state, Time, Home, "-", Away]
-b) live
-[id, state, Stage, Home, Score, Away, Half-time]
-c) past
-[id, state, Stage, Home, Score, Away, Half-time]
-
-if Stage is null then a)
-else if Stage is int between (0,130) then b)
-else then c)
-
-update for check up on a) and b)
-c) is terminated and archived
-'''
-x = []
-
-# create an HTML Session object
+# Press the green button in the gutter to run the script.
 session = HTMLSession()
 
-print(session.cookies)
+url = 'https://www.otomoto.pl'
+cat = ['osobowe', 'czesci', 'dostawcze', 'motocykle-i-quady', 'ciezarowe', 'maszyny-budowlane', 'przyczepy', 'rolnicze']
 
-def getPostJS(url):
+f_link = ''
 
-    # Use the object above to connect to needed webpage
-    r = session.get(url)
+act_url = url
 
-    print(r.cookies)
 
-    # Run JavaScript code on webpage
+
+act_cat = -1
+act_brand = ''
+act_model = ''
+act_from = ''
+act_location = ''
+act_min_price = ''
+act_max_price = ''
+act_to = ''
+act_mileage_from = ''
+act_mileage_to = ''
+act_fuel_type = ''
+act_country = ''
+
+
+def set_cat(int):
+    global act_cat
+    global act_url
+    try:
+        act_cat = int
+        act_url = f'{act_url}/{cat[act_cat]}'
+    except:
+        print('set cat failed')
+
+def set_brand(txt):
+    global act_brand
+    global act_url
+    try:
+        act_brand = txt
+        act_url = f'{act_url}/{act_brand}'
+    except:
+        print('set brand failed')
+
+def set_model(txt):
+    global act_model
+    global act_url
+    try:
+        if not act_brand:
+            raise
+        act_model = txt
+        act_url = f'{act_url}/{act_model}'
+    except:
+        print('set model failed')
+
+def set_from(txt):
+    global act_from
+    global act_url
+    try:
+        act_from = txt
+    except:
+        print('set from failed')
+
+def set_location(txt):
+    global act_location
+    global act_url
+    try:
+        act_location = txt
+    except:
+        print('set location failed')
+
+
+def choose_cat():
+    print('Wybierz kategorię spośród podanych, wpisz liczbę:')
+    global act_cat
+    for indx, c in enumerate(cat):
+        print(str(indx)+'. '+c)
+    act = input('Interesuje Cię kategoria numer?  ')
+    try:
+        if int(act) == 3 or int(act) == 0:
+            raise
+        print('\nWybrana kategoria to: ' + cat[int(act)] +'\n')
+        act_cat = act
+    except:
+        print('Kategoria nie jest obsługiwana')
+        choose_cat()
+
+def choose_brand():
+    r = session.get(act_url)
     r.html.render()
 
-    # return generated html
-    return r.html.html
-
-#find meaning of tokens jig-saw
-
-def resolve(arr):
-    result = []
-    tmp_line = ''
-    soup = BeautifulSoup(html, 'html.parser')
-    for a in arr:
-        line = soup.find(text = re.compile(str(a)))
-        # try:
-        if isinstance(line, str) and line is not tmp_line and len(line) < 30:
-           # print('a: '+line)
-           result.append(line)
-           tmp_line = line
-           # print([(x,y) for x in line for y in result])
-           tokens = line.split()
-           print([(x,y) for x in tokens for y in result if x == y ])
-        else:
-            pass
-
-    if len(result) == 3:
-        line0 = soup.find(text = re.compile(result[0]))
-        # line1 = soup.find(text = re.compile(result[1]))
-        # line2 = soup.find(text = re.compile(result[2]))
-
-        print('When 3(0): '+str(line0) +'\n')
-
-
-    return result
-
-def log(msg):
-    # file = open('log.txt', 'a+')
-    t = time.localtime()
-    ct = time.strftime("%H:%M:%S", t)
-    print(ct +" "+ msg)
-    # f.write()
-
-def append_to_csv(r1, r2):
-    # create directory for today
-
-    folder_name = str
-    folder = os.path.join(os.path.dirname(os.path.abspath(__file__))
-                          +'/'+str(date))
-    file_name = '{}.txt'.format(folder_name)
-    file = os.path.join(folder, file_name)
-    os.makedirs(folder)
-    with open(file, 'w') as f:
-        f.write('Some text')
-
-    # with open(str(date)+'//matches.csv', mode='a+') as mf:
-    #     fieldnames = ['Stage', 'Home', 'Score', 'Away', 'Half-time']
-    #
-    #     mf_writer = csv.DictWriter(mf, fieldnames=fieldnames)
-    #
-    #     mf_writer.writeheader()
-    #     mf_writer.writerow({'Stage' : r2[0],
-    #                         'Home' : r1[0], 'Score' : '-', 'Away' : r1[1], 'Half-time' : '-'})
-
-
-    # Pandas write
-
-    # df = pandas.read_csv(str(date)+'//matches.csv', index_col='Stage', names=['Stage', 'Home', 'Score', 'Away', 'Half-time'])
-    # df.to_csv()
-
-
-# MAIN #
-
-html = getPostJS(url)
-
-# BeautifulSoup approach
-soup = BeautifulSoup(html, 'html.parser')
-'''
-    Find a tag element with a  given class
-    soup.find_all('div', {"class":"event__"})
     '''
-divs = soup.find_all('div', {"class":"event__match"})
+        Find a tag element with a  given class
+        soup.find_all('div', {"class":"event__"})
+    '''
+    soup = BeautifulSoup(r.html.html, 'html.parser')
+    brands = soup.find('select', {'title':'Marka pojazdu'}).text.split('\n')
+    brands = brands[1:]
+    print('Możliwe marki: ')
+    for indx, b in enumerate(brands):
+        if b == brands[0]:
+            pass
+        else:
+            try:
+                tokens = b.split()
+                print(tokens[:-1], tokens[-1], ' aktywnych ogłoszeń')
+            except:
+                print('To wszystkie marki pojazdów \n')
+    act = input('Wpisz nazwę marki, jak wyżej:   ')
 
-teams = soup.find_all('div', {'class':'event__participant'})
+    # try:
+    #     if str(act) not in [x[0] for x in brands]:
+    #         raise
+    #     return act
+    # except:
+    #     print('Podana Marka jest niewłaściwa')
+    #     chooseBrand()
 
-date = soup.find('div', {'class': 'calendar__datepicker'})
-date = date.text[:5]
-# print(f"today's ({date}) matches:")
+    # while str(act) not in [x for x in brands]:
+    #     act = input('Wpisz POPRAWNĄ nazwę marki:   ')
 
-# print Matches
+    return act
 
-for d in divs:
-    # keys = ['kobiety']
-    # if any(word in d for word in keys):
-    # print(type(d.text))
-    # if [re.findall('ŚWIAT:', str(d))]:
-    #     pass
 
-    r1 = re.findall(r"[A-Z]{1,2}[a-z]*", d.text)
-    r2 = re.findall(r"[\d]+[:][\d]+", d.text)
+'''
+Task manager attempt
 
-    print(r1)
-    print(r2)
+def runMenu(x):
+        print('wtf')
+        switcher = {
+            0: (chooseCat()),
+            1: (chooseBrand()),
+            2: (chooseModel()),
+        }
+        return switcher.get(x, 'nothing')
+'''
 
-    # if r1[0] == 'Atl':
-    #     print(r1[0])
-    #     r1 = resolve(r1)
-    #     print(r1)
 
-    if len(r1) != 2:
-        print('% TRANSFORMATION %')
-        r1 = resolve(r1)
-        print(r1)
-        print(r2)
-        # print(f'Match between {r1[0]} and {r1[1]} is going to start at {r2}')
-        #append_to_csv(r1,r2)
+def choose_model():
+    r = session.get(act_url)
+    r.html.render()
 
-        # except:
-        #     print("Can't load "+str(r1))
+    '''
+        Find a tag element with a  given class
+        soup.find_all('div', {"class":"event__"})
+    '''
+    soup = BeautifulSoup(r.html.html, 'html.parser')
+    models = soup.find('select', {'title':'Model pojazdu'}).text.split('\n')
+
+
+    models = models[1:]
+    print('Możliwe marki: ')
+
+    tokens = str(models[0])[7:]
+    tokens = tokens.split()
+    print(*tokens[::2], sep ='\n')
+    act = input('Wybierz model:   ')
+    return act
+
+def get_links(urll):
+    # r = session.get(act_url)
+    # r.html.render()
+    r = requests.get(urll)
+
+    soup = BeautifulSoup(r.text, 'html.parser')
+    adds = []
+
+    for a in soup.find_all('a', href=True):
+        if str(a['href']).startswith('https://www.otomoto.pl/oferta'):
+            #print('found the URL: ', a['href'])
+            if a['href'] not in adds:
+                adds.append(a['href'])
+
+    return adds
+
+def get_details(url):
+    details = []
+    params  = []
+    r = requests.get(url=str(url))
+
+
+    soup = BeautifulSoup(r.text, 'html.parser')
+
+    labels = soup.find_all('span', {'class': 'offer-params__label'})
+    values = soup.find_all('div', {'class': 'offer-params__value'})
+    price  = soup.find('span', {'class': 'offer-price__number'})
+
+    details_dict = {
+        'Cena': price.text.strip()
+    }
+
+    for i in range(0, len(labels)-1):
+        # params.append([labels[i].text.strip(), values[i].text.strip()])
+        details_dict[labels[i].text.strip()] = values[i].text.strip()
+
+
+    # print(params)
+
+    # print(str(params[4])+' '+str(params[5])+' '+str(params[6]))
+
+    details.append(details_dict)
+    details.append(url)
+
+    return details
+
+
+def f_link_builder():
+    link = f'https://www.otomoto.pl'
+    for p in OMParams:
+        if p:
+            if p == act_from:
+                link += '/od-'+str(p)
+            else:
+                link += '/'+str(p)
+    return link
+
+
+if __name__ == '__main__':
+    print('Witaj w przeglądarce OTOMOTO')
+    print('#!# Jesli zostawisz puste pole to pokażesz wszystkie opcje #!#')
+
+#    Step by step filling
+
+    # act_cat = chooseCat()
+    # act_url = f'{act_url}/{cat[3]}'
+    choose_cat()
+    # act_brand = choose_brand()
+    # act_url = f'{act_url}/{act_brand}'
+    set_brand('BMW')
+    # act_model = chooseModel()
+    # act_url = f'{act_url}/{act_model}'
+    set_model('C1')
+
+    # set_from(2021)
+
+    #set_location('/Warszawa')
+
+    #act_url = 'https://www.otomoto.pl/motocykle-i-quady/suzuki/rm-z/'
+
+    # print(act_url)
+
+    OMParams = [cat[act_cat], act_brand, act_model, act_from, act_location, act_min_price, act_max_price,
+                act_to, act_mileage_from, act_mileage_to, act_fuel_type, act_country]
+
+    f_link = f_link_builder()
+    print(f_link)
+    print(cat[0])
+    #
+    # f_link = f'https://www.otomoto.pl/{act_cat}/{act_brand}/{act_model}/od-{act_from}{act_location}/?search%5Bfilter_float_price%3Afrom%5D={act_min_price}&search%5Bfilter_float_price%3Ato%5D={act_max_price}&search%5Bfilter_float_year%3Ato%5D={act_to}&search%5Bfilter_float_mileage%3Afrom%5D={act_mileage_from}&search%5Bfilter_float_mileage%3Ato%5D={act_mileage_to}&search%5Bfilter_enum_fuel_type%5D%5B0%5D={act_fuel_type}&search%5Bfilter_enum_country_origin%5D%5B0%5D={act_country}&'
+    #
+    # links = get_links(f_link)
+    # for link in links:
+    #     print(*get_details(link), sep='\n')
