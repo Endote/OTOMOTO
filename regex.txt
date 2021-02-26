@@ -1,0 +1,45 @@
+https://www.otomoto.pl/motocykle-i-quady/
+access/drr/
+od-2000/
+?	search%5Bfilter_float_price%3Afrom%5D=10000	&	search%5Bfilter_float_price%3Ato%5D=40000
+&	search%5Bfilter_float_year%3Ato%5D=2010		
+&	search%5Bfilter_float_mileage%3Afrom%5D=20000	&	search%5Bfilter_float_mileage%3Ato%5D=100000
+&	search%5Bfilter_enum_fuel_type%5D%5B0%5D=petrol	&	search%5Bfilter_enum_country_origin%5D%5B0%5D=a
+&	search%5Border%5D=created_at%3Adesc	&	search%5Bcountry%5D=
+
+
+https://www.otomoto.pl/motocykle-i-quady
+/access/drr/
+od-2000/warszawa/
+?	search%5Bfilter_float_price%3Afrom%5D=10000	&	search%5Bfilter_float_price%3Ato%5D=40000
+&	search%5Bfilter_float_year%3Ato%5D=2010		&	search%5Bfilter_float_mileage%3Afrom%5D=20000
+&	search%5Bfilter_float_mileage%3Ato%5D=100000	&	search%5Bfilter_enum_fuel_type%5D%5B0%5D=petrol
+&	search%5Bfilter_enum_country_origin%5D%5B0%5D=a	&	search%5Border%5D=created_at%3Adesc&search%5Bdist%5D=50	
+&	search%5Bcountry%5D=
+
+f'https://www.otomoto.pl/{act_cat}/{act_brand}/{act_model}/od-{act_from}/{act_location}
+/
+?search%5Bfilter_float_price%3Afrom%5D={act_min_price}
+&search%5Bfilter_float_price%3Ato%5D={act_max_price}
+&search%5Bfilter_float_year%3Ato%5D={act_to}
+&search%5Bfilter_float_mileage%3Afrom%5D={act_mileage_from}
+&search%5Bfilter_float_mileage%3Ato%5D={act_mileage_to}
+&search%5Bfilter_enum_fuel_type%5D%5B0%5D={act_fuel_type}
+&search%5Bfilter_enum_country_origin%5D%5B0%5D={act_country}
+&'
+
+
+#####
+
+SAMPLE ADD LI
+
+#####
+
+<a 
+data-ad-id="6077551603" 
+href="https://www.otomoto.pl/oferta/aprilia-falco-1000-gwarancja-bezwypadku-dodatki-super-stan-bez-wkladu-hit-ID6DiMNR.html#bb3455c63a" 
+title="Aprilia Falco 1000#Gwarancja Bezwypadku#Dodatki#Super stan#Bez wkładu#HIT" 
+data-ninja-extradata="{&quot;ad_id&quot;: &quot;6077551603&quot;, &quot;result_position&quot;: &quot;1&quot;, &quot;price_prediction_indicator&quot;: &quot;&quot;}" class="offer-item__photo-link ds-photo lazyloaded">
+                            <img class=" lazyloaded" data-src="https://ireland.apollo.olxcdn.com/v1/files/eyJmbiI6IjlzOGhoNnQyeTk3bjMtT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.l66N1d5ejNw-S4RqOGVDVolKwIb5bhkhq4_6LEJGDGY/image;s=148x110" data-srcset="https://ireland.apollo.olxcdn.com/v1/files/eyJmbiI6IjlzOGhoNnQyeTk3bjMtT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.l66N1d5ejNw-S4RqOGVDVolKwIb5bhkhq4_6LEJGDGY/image;s=320x240 768w" srcset="https://ireland.apollo.olxcdn.com/v1/files/eyJmbiI6IjlzOGhoNnQyeTk3bjMtT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.l66N1d5ejNw-S4RqOGVDVolKwIb5bhkhq4_6LEJGDGY/image;s=320x240 768w" src="https://ireland.apollo.olxcdn.com/v1/files/eyJmbiI6IjlzOGhoNnQyeTk3bjMtT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.l66N1d5ejNw-S4RqOGVDVolKwIb5bhkhq4_6LEJGDGY/image;s=148x110">
+            
+                    </a>

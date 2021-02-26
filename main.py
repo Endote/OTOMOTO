@@ -1,7 +1,6 @@
 from requests_html import HTMLSession
 from bs4 import BeautifulSoup
 import requests
-import re
 
 
 class OTOMOTO:
@@ -33,25 +32,25 @@ class OTOMOTO:
         self.act_country = ''
         self.act_search = ''
 
-        self.user()
+        # self.user()
 
-    def param_switch(self, x):
-        switcher = {
-            0: 'Marka',
-            1: "Model",
-            2: "Minimalny rok produkcji",
-            3: "Maksymalny rok produkcji",
-            4: "Minimalna Cena",
-            5: "Maksymalna Cena",
-            6: "Lokalizacja",
-            7: "Minimalny Przebieg",
-            8: "Maksymalny Przebieg",
-            9: "Typ Paliwa",
-            10: "Kraj",
-            11: "Fraza",
-            #12: "December"
-        }
-        print(switcher.get(x, 'Nie odnaloziono parametru...'))
+    # def param_switch(self, x):
+    #     switcher = {
+    #         0: self.choose_brand(),
+    #         1: self.choose_model(),
+    #         2: "Minimalny rok produkcji",
+    #         3: "Maksymalny rok produkcji",
+    #         4: "Minimalna Cena",
+    #         5: "Maksymalna Cena",
+    #         6: "Lokalizacja",
+    #         7: "Minimalny Przebieg",
+    #         8: "Maksymalny Przebieg",
+    #         9: "Typ Paliwa",
+    #         10: "Kraj",
+    #         11: "Fraza",
+    #         #12: "December"
+    #     }
+    #     print(switcher.get(x, ''))
 
     def user(self):
         for indx, c in enumerate(self.cat):
@@ -64,25 +63,52 @@ class OTOMOTO:
         print('4 Minimalna Cena')
         print('5 Maksymalna Cena')
         print('6 Lokalizacja')
-        print('7 Maksymalna Cena')
-        print('8 Maksymalna Cena')
+        print('7 Minimalny Przebieg')
+        print('8 Maksymalny Przebieg')
         print('9 Typ Paliwa')
         print('10 Kraj')
         print('11 Fraza')
 
+        while True:
+            x = input(
+                'Ustal parametry z listy...\nJeśli skończyłeś wpisywać parametry wpisz "Szukaj"\nWybierz cyfrę parametru, który chcesz zmienić  ')
+            if x == 'Szukaj':
+                break
+            x = int(x)
+            if x == 0:
+                self.choose_brand()
+            if x == 1:
+                self.choose_model()
+            if x == 2:
+                self.choose_from()
+            if x == 3:
+                self.choose_to()
+            if x == 4:
+                self.choose_min_price()
+            if x == 5:
+                self.choose_max_price()
+            if x == 6:
+                self.choose_location()
+            if x == 7:
+                self.choose_mileage_from()
+            if x == 8:
+                self.choose_mileage_to()
+            if x == 9:
+                self.choose_fuel_type()
+            if x == 10:
+                self.choose_country()
+            if x == 11:
+                self.choose_country()
 
-        x = input('Ustal parametry z listy...\nWybierz cyfrę parametru, który chcesz zmienić  ')
+        print(self.act_model)
 
-        print(self.param_switch(x))
+
 
 
     def set_cat(self, int):
-        global cat
-        global act_cat
-        global act_url
         try:
-            act_cat = int
-            act_url = f'{act_url}/{cat[act_cat]}'
+            self.act_cat = int
+            self.act_url = f'{self.act_url}/{self.cat[self.act_cat]}'
         except:
             print('set cat failed')
 
@@ -94,60 +120,49 @@ class OTOMOTO:
             print('set brand failed')
 
     def set_model(self, txt):
-        global act_model
-        global act_url
         try:
             if not self.act_brand:
                 raise
-            act_model = txt
-            act_url = f'{act_url}/{act_model}'
+            self.act_model = txt
+            self.act_url = f'{self.act_url}/{self.act_model}'
         except:
             print('set model failed')
 
     def set_from(self, txt):
-        global act_from
-        global act_url
         try:
-            act_from = txt
+            self.act_from = txt
         except:
             print('set from failed')
 
+    def set_to(self, txt):
+        try:
+            self.act_to = txt
+        except:
+            print('set to failed')
 
     def set_location(self, txt):
-        global act_location
-        global act_url
         try:
-            act_location = txt
+            self.act_location = txt
         except:
             print('set location failed')
 
-
     def set_min_price(self, txt):
-        global act_min_price
-        global act_url
         try:
-            act_min_price = txt
+            self.act_min_price = txt
         except:
             print('set min price failed')
 
-
     def set_max_price(self, txt):
-        global act_max_price
-        global act_url
         try:
-            act_max_price = txt
+            self.act_max_price = txt
         except:
             print('set max price failed')
 
-
     def set_search(self, txt):
-        global act_search
-        global  act_url
         try:
-            act_search = txt
+            self.act_search = txt
         except:
             print('set search failed')
-
 
     def choose_cat(self):
         try:
@@ -162,16 +177,20 @@ class OTOMOTO:
             self.choose_cat()
 
     def choose_brand(self):
-        r = self.session.get(act_url)
+        self.act_url = self.f_link_builder()
+        r = self.session.get(self.act_url)
         r.html.render()
+        # print(self.act_url)
 
         '''
             Find a tag element with a  given class
             soup.find_all('div', {"class":"event__"})
         '''
         soup = BeautifulSoup(r.html.html, 'html.parser')
+        # print(soup)
         brands = soup.find('select', {'title':'Marka pojazdu'}).text.split('\n')
         brands = brands[1:]
+
         print('Możliwe marki: ')
         for indx, b in enumerate(brands):
             if b == brands[0]:
@@ -184,22 +203,12 @@ class OTOMOTO:
                     print('To wszystkie marki pojazdów \n')
         act = input('Wpisz nazwę marki, jak wyżej:   ')
 
-        # try:
-        #     if str(act) not in [x[0] for x in brands]:
-        #         raise
-        #     return act
-        # except:
-        #     print('Podana Marka jest niewłaściwa')
-        #     chooseBrand()
-
-        # while str(act) not in [x for x in brands]:
-        #     act = input('Wpisz POPRAWNĄ nazwę marki:   ')
-
-        return act
-
+        self.act_brand = act
+        self.act_url = self.f_link_builder()
 
     def choose_model(self):
-        r = self.session.get(act_url)
+        self.act_url = self.f_link_builder()
+        r = self.session.get(self.act_url)
         r.html.render()
 
         '''
@@ -208,17 +217,16 @@ class OTOMOTO:
         '''
         soup = BeautifulSoup(r.html.html, 'html.parser')
         models = soup.find('select', {'title':'Model pojazdu'}).text.split('\n')
-
-
         models = models[1:]
-        print('Możliwe marki: ')
+        print('Możliwe modele: ')
 
         tokens = str(models[0])[7:]
         tokens = tokens.split()
         print(*tokens[::2], sep ='\n')
         act = input('Wybierz model:   ')
-        return act
-
+        # return act
+        self.act_model = act
+        self.act_url = self.f_link_builder()
 
     def get_links(self, urll):
         # r = session.get(act_url)
@@ -292,6 +300,15 @@ class OTOMOTO:
                         continue
                     else:
                         link += '/'+f'&search%5Bfilter_float_price%3Ato%5D={str(p)}'
+
+                if p == self.act_to:
+                    if not query:
+                        link += '/'+f'?search%5Bfilter_float_year%3Ato%5D={str(p)}'
+                        query = True
+                        continue
+                    else:
+                        link += '/'+f'&search%5Bfilter_float_year%3Ato%5D={str(p)}'
+
                 if p == self.act_search:
                     link += '/q-'+str(p)
                     continue
@@ -308,15 +325,23 @@ if __name__ == '__main__':
 #    Step by step filling
 
     om = OTOMOTO()
+
+    # print(om.act_brand)
     #
-    # om.set_brand('BMW')
+    # om.set_cat()
+    om.set_brand('Mustang')
+    # om.set_model('Firebird')
+    om.set_from(1967)
+    om.set_to(1980)
+    # om.set_min_price(20000)
+    # om.set_max_price(50000)
     #
-    # om.f_link = om.f_link_builder()
+    om.f_link = om.f_link_builder()
     # print(om.f_link)
     # print(cat[0])
     #
     # f_link = f'https://www.otomoto.pl/{act_cat}/{act_brand}/{act_model}/od-{act_from}{act_location}/?search%5Bfilter_float_price%3Afrom%5D={act_min_price}&search%5Bfilter_float_price%3Ato%5D={act_max_price}&search%5Bfilter_float_year%3Ato%5D={act_to}&search%5Bfilter_float_mileage%3Afrom%5D={act_mileage_from}&search%5Bfilter_float_mileage%3Ato%5D={act_mileage_to}&search%5Bfilter_enum_fuel_type%5D%5B0%5D={act_fuel_type}&search%5Bfilter_enum_country_origin%5D%5B0%5D={act_country}&'
     #
-    # links = om.get_links(om.f_link)
-    # for link in links:
-    #     print(*om.get_details(link), sep='\n')
+    links = om.get_links(om.f_link)
+    for link in links:
+        print(*om.get_details(link), sep='\n')
